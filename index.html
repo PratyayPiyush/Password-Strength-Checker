@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Password Strength Checker JavaScript| CodingNepal</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        Password Strength Indicator <br />No of letters:
+        <span class="showLetter">0</span>
+      </header>
+      <form action="#">
+        <div class="field">
+          <input
+            onkeyup="trigger()"
+            onmouseover="showLetters()"
+            type="password"
+            placeholder="Type password"
+          />
+          <span class="showBtn">SHOW</span>
+        </div>
+        <div class="indicator">
+          <span class="weak"></span>
+          <span class="medium"></span>
+          <span class="strong"></span>
+          <span class="unbreakable"></span>
+        </div>
+        <div class="text"></div>
+      </form>
+      <div class="generate">
+        <button class="pwdButton" onclick="generatePassword()">
+          Suggest new Password
+        </button>
+        <p class="password"></p>
+      </div>
+    </div>
+    <script>
+      const indicator = document.querySelector(".indicator");
+      const input = document.querySelector("input");
+      const weak = document.querySelector(".weak");
+      const medium = document.querySelector(".medium");
+      const strong = document.querySelector(".strong");
+      const unbreakable = document.querySelector(".unbreakable");
+      const text = document.querySelector(".text");
+      const showBtn = document.querySelector(".showBtn");
+      const generate = document.querySelector(".generate");
+      const password = document.querySelector(".password");
+      const showLetter = document.querySelector(".showLetter");
+      let no = 1;
+      let regExpWeak = /[a-z]/;
+      let regExpMedium = /[0-9]/;
+      let regExpStrong = /[A-Z]/;
+      let regExpUnBreakable = /[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/;
+      function trigger() {
+        if (input.value != "") {
+          indicator.style.display = "block";
+          indicator.style.display = "flex";
+          if (
+            // input.value.length <= 3 &&
+            input.value.match(regExpWeak) ||
+            input.value.match(regExpMedium) ||
+            input.value.match(regExpStrong) ||
+            input.value.match(regExpUnBreakable)
+          )
+            no = 1;
+          if (
+            // input.value.length >= 6 &&
+            (input.value.match(regExpWeak) &&
+              input.value.match(regExpMedium)) ||
+            (input.value.match(regExpMedium) &&
+              input.value.match(regExpUnBreakable)) ||
+            (input.value.match(regExpWeak) &&
+              input.value.match(regExpUnBreakable))
+          )
+            no = 2;
+          if (
+            (input.value.match(regExpWeak) &&
+              input.value.match(regExpMedium) &&
+              input.value.match(regExpStrong)) ||
+            (input.value.match(regExpMedium) &&
+              input.value.match(regExpStrong)) ||
+            (input.value.match(regExpWeak) && input.value.match(regExpStrong))
+          )
+            no = 3;
+          if (
+            // input.value.length >= 6 &&
+            input.value.match(regExpWeak) &&
+            input.value.match(regExpMedium) &&
+            input.value.match(regExpStrong) &&
+            input.value.match(regExpUnBreakable)
+          )
+            no = 4;
+          if (no == 1) {
+            weak.classList.add("active");
+            text.style.display = "block";
+            text.textContent = "Your password is too week";
+            text.classList.add("weak");
+            generate.style.display = "block";
+          }
+          if (no == 2) {
+            medium.classList.add("active");
+            text.textContent = "Your password is medium";
+            text.classList.add("medium");
+            generate.style.display = "block";
+          } else {
+            medium.classList.remove("active");
+            text.classList.remove("medium");
+          }
+          if (no == 3) {
+            weak.classList.add("active");
+            medium.classList.add("active");
+            strong.classList.add("active");
+            text.textContent = "Your password is strong";
+            text.classList.add("strong");
+            generate.style.display = "none";
+          } else {
+            strong.classList.remove("active");
+            text.classList.remove("strong");
+          }
+          if (no == 4) {
+            weak.classList.add("active");
+            medium.classList.add("active");
+            strong.classList.add("active");
+            unbreakable.classList.add("active");
+            text.textContent = "Your password is unbreakable";
+            text.classList.add("unbreakable");
+            generate.style.display = "none";
+          } else {
+            unbreakable.classList.remove("active");
+            text.classList.remove("unbreakable");
+          }
+          showBtn.style.display = "block";
+          showBtn.onclick = function () {
+            if (input.type == "password") {
+              input.type = "text";
+              showBtn.textContent = "HIDE";
+              showBtn.style.color = "#23ad5c";
+            } else {
+              input.type = "password";
+              showBtn.textContent = "SHOW";
+              showBtn.style.color = "#000";
+            }
+          };
+        } else {
+          indicator.style.display = "none";
+          text.style.display = "none";
+          showBtn.style.display = "none";
+        }
+      }
+      function generatePassword() {
+        let length = 8;
+        let alphanumeric =
+          "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*().-=";
+        let newPassword = "";
+        for (let i = 0, n = alphanumeric.length; i < length; ++i) {
+          newPassword += alphanumeric.charAt(Math.floor(Math.random() * n));
+        }
+        password.innerText = `Password: ${newPassword}`;
+      }
+      function showLetters() {
+        showLetter.innerText = parseInt(input.value.length);
+      }
+    </script>
+  </body>
+</html>
